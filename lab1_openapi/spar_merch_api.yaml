@@ -1,0 +1,273 @@
+openapi: 3.0.3
+info:
+  title: Spar Merch API
+  description: |
+    Внутренний сервис покупки корпоративного мерча сотрудниками сети магазинов Spar. 
+    API предоставляет возможности для управления каталогом товаров (CRUD), 
+    аутентификации сотрудников и проведения бонусных транзакций.
+  version: 1.0.0
+  contact:
+    name: Техническая поддержка Spar Merch
+    email: support@spar-merch.internal
+
+servers:
+  - url: http://localhost:8000/api/v1
+    description: Локальный сервер разработки
+
+paths:
+  /auth/sign_in:
+    post:
+      summary: Аутентификация сотрудника
+      operationId: signIn
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                password:
+                  type: string
+                  format: password
+              required:
+                - username
+                - password
+      responses:
+        '200':
+          description: Успешная аутентификация
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenResponse'
+
+  /merch:
+    post:
+      summary: Создание нового товара мерча (Админ)
+      operationId: createMerchItem
+      tags:
+        - Merch CRUD
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MerchItemCreate'
+      responses:
+        '201':
+          description: Товар успешно создан
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MerchItem'
+        '400':
+          description: Некорректные данные запроса
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    get:
+      summary: Получение списка всех товаров мерча
+      operationId: getAllMerchItems
+      tags:
+        - Merch CRUD
+      parameters:
+        - name: limit
+          in: query
+          description: Максимальное количество возвращаемых товаров
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 100
+      responses:
+        '200':
+          description: Успешный список товаров
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MerchItem'
+
+  /merch/{id}:
+    get:
+      summary: Получение товара мерча по ID
+      operationId: getMerchItemById
+      tags:
+        - Merch CRUD
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: UUID искомого товара
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Данные товара
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MerchItem'
+        '404':
+          description: Товар не найден
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    put:
+      summary: Полное обновление товара мерча по ID
+      operationId: updateMerchItem
+      tags:
+        - Merch CRUD
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: UUID обновляемого товара
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MerchItemUpdate'
+      responses:
+        '200':
+          description: Товар успешно обновлен
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MerchItem'
+        '404':
+          description: Товар не найден
+
+    delete:
+      summary: Удаление товара мерча по ID
+      operationId: deleteMerchItem
+      tags:
+        - Merch CRUD
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: UUID удаляемого товара
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: Товар успешно удален
+        '404':
+          description: Товар не найден
+
+  /transactions/buy/{merch_item_id}:
+    post:
+      summary: Покупка товара за бонусные монеты
+      operationId: buyMerchItem
+      tags:
+        - Transactions
+      parameters:
+        - name: merch_item_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Покупка совершена успешно
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StandardResponse'
+        '400':
+          description: Недостаточно средств на счете
+
+components:
+  schemas:
+    TokenResponse:
+      type: object
+      properties:
+        access_token:
+          type: string
+        token_type:
+          type: string
+          example: "bearer"
+
+    StandardResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: "Операция выполнена успешно"
+
+    MerchItem:
+      type: object
+      required:
+        - id
+        - name
+        - price
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+          example: "Фирменная ветровка Spar"
+        price:
+          type: number
+          format: float
+          example: 1500.0
+        description:
+          type: string
+          example: "Стильная ветровка с логотипом компании"
+
+    MerchItemCreate:
+      type: object
+      required:
+        - name
+        - price
+      properties:
+        name:
+          type: string
+        price:
+          type: number
+          format: float
+        description:
+          type: string
+
+    MerchItemUpdate:
+      type: object
+      required:
+        - name
+        - price
+      properties:
+        name:
+          type: string
+        price:
+          type: number
+          format: float
+        description:
+          type: string
+
+    Error:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
