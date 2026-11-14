@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spar Merch — Магазин мерча</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+
+<!-- ШАПКА -->
+<header class="header">
+    <div class="header-inner">
+        <div class="logo">
+            <span class="logo-icon">🛒</span>
+            <span class="logo-text">Spar <b>Merch</b></span>
+        </div>
+        <nav class="nav" id="nav" style="display:none;">
+            <button class="nav-btn active" data-screen="catalog">Каталог</button>
+            <button class="nav-btn" data-screen="inventory">Мой инвентарь</button>
+            <button class="nav-btn" data-screen="transfer">Переводы</button>
+            <button class="nav-btn" data-screen="reports">Отчёты</button>
+        </nav>
+        <div class="header-right">
+            <div class="balance-badge" id="balance-badge" style="display:none;">
+                🪙 <span id="balance-value">0</span>
+            </div>
+            <button class="btn-logout" id="btn-logout" style="display:none;">Выйти</button>
+        </div>
+    </div>
+</header>
+
+<!-- ЭКРАН: ЛОГИН / РЕГИСТРАЦИЯ -->
+<main>
+    <section id="screen-auth" class="screen active">
+        <div class="auth-card">
+            <h1>Добро пожаловать в Spar Merch</h1>
+            <p class="subtitle">Внутренний магазин мерча для сотрудников сети Spar</p>
+
+            <div class="tabs">
+                <button class="tab active" id="tab-login">Вход</button>
+                <button class="tab" id="tab-register">Регистрация</button>
+            </div>
+
+            <!-- Форма входа -->
+            <form id="form-login" class="auth-form">
+                <label>Логин</label>
+                <input type="text" id="login-username" placeholder="ivan_manager" required>
+                <label>Пароль</label>
+                <input type="password" id="login-password" placeholder="••••••••" required>
+                <button type="submit" class="btn-primary">Войти</button>
+            </form>
+
+            <!-- Форма регистрации -->
+            <form id="form-register" class="auth-form" style="display:none;">
+                <label>Логин</label>
+                <input type="text" id="reg-username" placeholder="vasya_pupkin" required>
+                <label>Пароль</label>
+                <input type="password" id="reg-password" placeholder="Минимум 6 символов" required>
+                <label>Email (опционально)</label>
+                <input type="email" id="reg-email" placeholder="vasya@spar.ru">
+                <button type="submit" class="btn-primary">Зарегистрироваться</button>
+            </form>
+
+            <div class="auth-hint">
+                <b>Тестовые аккаунты:</b><br>
+                ivan_manager / maria_cashier / alex_stock / olga_hr / dmitry_director<br>
+                Пароль у всех: <code>password123</code>
+            </div>
+        </div>
+    </section>
+
+    <!-- ЭКРАН: КАТАЛОГ -->
+    <section id="screen-catalog" class="screen">
+        <h2 class="screen-title">Каталог мерча</h2>
+        <div class="items-grid" id="items-grid">
+            <!-- Карточки товаров вставляет JS -->
+        </div>
+    </section>
+
+    <!-- ЭКРАН: ИНВЕНТАРЬ -->
+    <section id="screen-inventory" class="screen">
+        <h2 class="screen-title">Мой инвентарь</h2>
+        <div id="inventory-list" class="table-wrap"></div>
+    </section>
+
+    <!-- ЭКРАН: ПЕРЕВОДЫ -->
+    <section id="screen-transfer" class="screen">
+        <h2 class="screen-title">Перевод монет коллеге</h2>
+        <div class="transfer-card">
+            <form id="form-transfer">
+                <label>Username получателя</label>
+                <input type="text" id="transfer-username" placeholder="maria_cashier" required>
+                <label>Количество монет</label>
+                <input type="number" id="transfer-amount" min="1" step="0.01" placeholder="100" required>
+                <button type="submit" class="btn-primary">Отправить 🪙</button>
+            </form>
+        </div>
+    </section>
+
+    <!-- ЭКРАН: ОТЧЁТЫ -->
+    <section id="screen-reports" class="screen">
+        <h2 class="screen-title">Отчёты</h2>
+        <div class="reports-card">
+            <div class="report-item">
+                <div class="report-icon">📊</div>
+                <div class="report-info">
+                    <h3>Отчёт по продажам мерча</h3>
+                    <p>Сводная статистика, топ-5 популярных товаров, общая выручка. Формат DOCX.</p>
+                    <button class="btn-primary" id="btn-download-report">Скачать отчёт</button>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+<!-- TOAST-УВЕДОМЛЕНИЯ -->
+<div id="toast-container"></div>
+
+<script src="/static/js/app.js"></script>
+</body>
+</html>

@@ -1,4 +1,4 @@
-from typing import List, TYPE_CHECKING
+from typing import List, Optional, TYPE_CHECKING
 from uuid import UUID, uuid4
 
 from sqlalchemy import PrimaryKeyConstraint, UniqueConstraint
@@ -30,7 +30,9 @@ class Employee(Base):
     email: Mapped[str] = mapped_column(String(256), nullable=True)
     phone: Mapped[str] = mapped_column(String(256), nullable=True)
     coins_amount: Mapped[float] = mapped_column(Float(), nullable=False, default=1000.0)
-    refresh_token: Mapped[str] = mapped_column(String(256), nullable=True)
+    refresh_token: Mapped[Optional[str]] = mapped_column(
+        String(512), nullable=True, comment="Refresh JWT токен для обновления сессии"
+    )
 
     # Связь 1:M с покупками
     purchases: Mapped[List["Purchase"]] = relationship(

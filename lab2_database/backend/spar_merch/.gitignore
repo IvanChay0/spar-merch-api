@@ -1,0 +1,30 @@
+# Переменные окружения (ПАРОЛИ!)
+.env
+
+# Виртуальное окружение
+.venv/
+venv/
+env/
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyc
+*.so
+.Python
+*.egg-info/
+
+# База данных SQLite (если используется)
+*.db
+*.sqlite
+*.sqlite3
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo

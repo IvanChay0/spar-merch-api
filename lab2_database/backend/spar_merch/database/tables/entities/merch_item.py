@@ -1,4 +1,4 @@
-from typing import List, TYPE_CHECKING
+from typing import List, Optional, TYPE_CHECKING
 from uuid import UUID, uuid4
 
 from sqlalchemy import PrimaryKeyConstraint
@@ -23,6 +23,9 @@ class MerchItem(Base):
     id: Mapped[UUID] = mapped_column(Uuid(), default=uuid4)
     name: Mapped[str] = mapped_column(String(256), nullable=False)
     price: Mapped[float] = mapped_column(Float(), nullable=False)
+    description: Mapped[Optional[str]] = mapped_column(
+        String(512), nullable=True, comment="Описание товара"
+    )
 
     purchases: Mapped[List["Purchase"]] = relationship(
         "Purchase", back_populates="merch_item"
